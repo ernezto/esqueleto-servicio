@@ -1,0 +1,15 @@
+.gradle
+build/
+out/
+logs/
+*.iml
+*.ipr
+*.iws
+*.ids
+.idea/
+.DS_Store
+servicio-dev.yml
+src/test/resources/test-integracion.yml
+sniese.jks
+*.der
+*.keystore

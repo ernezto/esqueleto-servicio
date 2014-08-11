@@ -1,0 +1,152 @@
+import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml
+
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'flyway'
+apply plugin: 'application'
+apply plugin: 'gradle-one-jar'
+apply plugin: 'pmd'
+apply plugin: 'findbugs'
+apply plugin: 'jacoco'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.flywaydb:flyway-gradle-plugin:3.0'
+        classpath 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.2'
+        classpath 'com.github.rholder:gradle-one-jar:1.0.3'
+    }
+}
+
+flyway {
+    def yamlConfig = new Yaml().load(new File('servicio-dev.yml').newReader())
+    def dbConfig = yamlConfig.database
+
+    user = dbConfig.user
+    password = dbConfig.password
+    url = dbConfig.url
+    schemas = [yamlConfig.configuracionSchema]
+}
+
+// Set our project variables
+project.ext {
+    dropwizardVersion = '0.7.0'
+    archivoConfiguracion = 'servicio-dev.yml'
+}
+// In this section you declare where to find the dependencies of your project
+repositories {
+    mavenCentral()
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    compile(
+            'io.dropwizard:dropwizard-core:' + dropwizardVersion,
+            'io.dropwizard:dropwizard-testing:' + dropwizardVersion,
+            'io.dropwizard:dropwizard-hibernate:' + dropwizardVersion,
+            'org.slf4j:slf4j-api:1.7.5',
+            'org.postgresql:postgresql:9.3-1101-jdbc41',
+            'org.flywaydb:flyway-core:3.0',
+            'commons-validator:commons-validator:1.4.0',
+    )
+    testCompile(
+            'junit:junit:4.11',
+            'org.hamcrest:hamcrest-core:1.3',
+            'org.mockito:mockito-all:1.9.5',
+    )
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.12'
+}
+
+// The main class of the application
+mainClassName = 'ec.gob.senescyt.ServicioApplication'
+
+// Configure the run task to start the Dropwizard service
+run {
+    if (project.hasProperty('ambiente')) {
+        if (ambiente.split().size() == 0) {
+            error = 'Debe especificar uno de los siguientes ambientes:\ndev: Desarrollo\nqa:Control de Calidad\nci:Integracion Continua\nEjemplo:./gradlew run -P ambiente=dev'
+
+            throw new StopExecutionException(error)
+        }
+
+        def ambienteParaLevantar = ambiente.split()[0]
+
+        ext.archivoConfiguracion = "servicio-$ambienteParaLevantar.yml"
+    }
+
+    args 'server', archivoConfiguracion
+}
+
+test {
+    dependsOn pmdMain, pmdTest, findbugsMain, findbugsTest
+}
+
+task unitTests(type: Test, dependsOn: testClasses) {
+    exclude 'ec/gob/senescyt/integration/**'
+}
+
+task integrationTests(type: Test, dependsOn: testClasses) {
+    include 'ec/gob/senescyt/integration/**'
+}
+
+tasks.withType(Test) {
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging {
+        showStandardStreams = true
+        displayGranularity = 2
+        exceptionFormat = 'full'
+        events 'started', 'passed'
+    }
+
+    outputs.upToDateWhen { false }
+}
+
+task oneJar(type: OneJar, dependsOn: clean) {
+    mainClass = mainClassName
+    additionalDir = file('src/main/resources')
+}
+
+pmd {
+    ruleSets = [
+            'basic',
+            'braces',
+            'clone',
+            'codesize',
+            'coupling',
+            'imports',
+            'logging-java',
+            'migrating',
+            'strictexception',
+            'strings',
+            'typeresolution',
+            'unusedcode',
+    ]
+    ruleSetFiles = files('config/pmd/pmd.xml')
+    targetJdk = '1.7'
+}
+
+findbugs {
+    toolVersion = '3.0.0'
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+jacoco {
+    toolVersion = '0.7.1.201405082137'
+}
