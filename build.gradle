@@ -150,3 +150,9 @@ compileJava {
 jacoco {
     toolVersion = '0.7.1.201405082137'
 }
+
+idea {
+    module {
+        sourceDirs += file('src/main/resources')
+    }
+}
