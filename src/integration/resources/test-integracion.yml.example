@@ -33,6 +33,9 @@ database:
   # whether or not idle connections should be validated
   checkConnectionWhileIdle: false
 
+logging:
+  level: WARN
+
 server:
   applicationConnectors:
     - type: http
