@@ -9,7 +9,7 @@ logs/
 .idea/
 .DS_Store
 servicio-dev.yml
-src/test/resources/test-integracion.yml
+src/integration/resources/test-integracion.yml
 sniese.jks
 *.der
 *.keystore

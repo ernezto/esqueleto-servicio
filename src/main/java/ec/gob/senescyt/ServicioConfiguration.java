@@ -14,16 +14,11 @@ public class ServicioConfiguration extends Configuration {
     @JsonProperty("database")
     private final DataSourceFactory database = new DataSourceFactory();
 
-    @Valid
-    @NotNull
-    @JsonProperty("configuracionSchema")
-    private String nombreSchema;
-
     public DataSourceFactory getDataSourceFactory() {
         return database;
     }
 
-    public String getNombreSchema() {
-        return nombreSchema;
+    public String getDefaultSchema() {
+        return database.getProperties().get("hibernate.default_schema");
     }
 }

@@ -28,8 +28,22 @@ flyway {
     user = dbConfig.user
     password = dbConfig.password
     url = dbConfig.url
-    schemas = [yamlConfig.configuracionSchema]
+    schemas = [dbConfig.properties.'hibernate.default_schema']
 }
+
+sourceSets {
+    intTest {
+        java {
+            srcDir 'src/integration/java'
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+        }
+        resources {
+            srcDir 'src/integration/resources'
+        }
+    }
+}
+
 
 // Set our project variables
 project.ext {
@@ -39,6 +53,11 @@ project.ext {
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
+}
+
+configurations {
+    intTestCompile.extendsFrom(testCompile)
+    intTestRuntime.extendsFrom(testRuntime)
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -84,15 +103,7 @@ run {
 }
 
 test {
-    dependsOn pmdMain, pmdTest, findbugsMain, findbugsTest
-}
-
-task unitTests(type: Test, dependsOn: testClasses) {
-    exclude 'ec/gob/senescyt/integration/**'
-}
-
-task integrationTests(type: Test, dependsOn: testClasses) {
-    include 'ec/gob/senescyt/integration/**'
+    dependsOn pmdMain, pmdTest, pmdIntTest, findbugsMain, findbugsTest, findbugsIntTest
 }
 
 tasks.withType(Test) {
@@ -105,6 +116,11 @@ tasks.withType(Test) {
     }
 
     outputs.upToDateWhen { false }
+}
+
+task intTest(type: Test) {
+    testClassesDir = sourceSets.intTest.output.classesDir
+    classpath = sourceSets.intTest.runtimeClasspath
 }
 
 task oneJar(type: OneJar, dependsOn: clean) {

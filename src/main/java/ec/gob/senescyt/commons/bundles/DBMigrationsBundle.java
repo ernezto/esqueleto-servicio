@@ -11,7 +11,7 @@ public class DBMigrationsBundle implements ConfiguredBundle<ServicioConfiguratio
     public void run(ServicioConfiguration configuration, Environment environment) {
         Flyway flyway = new Flyway();
         flyway.setDataSource(configuration.getDataSourceFactory().getUrl(), configuration.getDataSourceFactory().getUser(), configuration.getDataSourceFactory().getPassword());
-        flyway.setSchemas(configuration.getNombreSchema());
+        flyway.setSchemas(configuration.getDefaultSchema());
         flyway.migrate();
     }
 

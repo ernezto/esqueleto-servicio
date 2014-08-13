@@ -16,6 +16,7 @@ database:
     charSet: UTF-8
     hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate.show_sql: true
+    hibernate.default_schema: servicio_ejemplos
 
   # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 1s
@@ -31,8 +32,6 @@ database:
 
   # whether or not idle connections should be validated
   checkConnectionWhileIdle: false
-
-configuracionSchema: servicio-ejemplos
 
 logging:
   level: DEBUG
