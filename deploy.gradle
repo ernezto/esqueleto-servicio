@@ -1,0 +1,35 @@
+apply plugin: 'ssh'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.hidetake:gradle-ssh-plugin:0.3.9'
+    }
+}
+
+ssh {
+    identity = file('/var/go/.ssh/id_rsa')
+    knownHosts = allowAnyHosts
+}
+
+remotes {
+    snieseqa {
+        host = "$System.env.QA_SSH_IP"
+        port = "$System.env.QA_SSH_PORT".toInteger()
+        user = 'sniese'
+    }
+}
+
+task deployQA(type: SshTask) {
+    description = 'Despliega el Jar a QA'
+    session(remotes.snieseqa) {
+        def targetDir = '/home/sniese/servicios/servicio-ejemplos/'
+        execute "mkdir -p ${targetDir}"
+        put 'build/libs/servicio-standalone.jar', targetDir
+        put 'servicio-qa.yml', targetDir + 'servicio.yml'
+        put 'sniese.keystore', targetDir
+        executeSudo 'service servicio-ejemplos restart', pty: true
+    }
+}
