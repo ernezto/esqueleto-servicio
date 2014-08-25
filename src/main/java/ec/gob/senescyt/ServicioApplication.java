@@ -19,6 +19,7 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.hibernate.SessionFactory;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.ws.rs.ext.ExceptionMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
@@ -35,6 +36,7 @@ public class ServicioApplication extends Application<ServicioConfiguration> {
             return configuration.getDataSourceFactory();
         }
     };
+    private ServicioConfiguration configuration;
 
     public static void main(String[] args) throws Exception {
         new ServicioApplication().run(args);
@@ -53,6 +55,7 @@ public class ServicioApplication extends Application<ServicioConfiguration> {
 
     @Override
     public void run(ServicioConfiguration configuration, Environment environment) throws Exception {
+        this.configuration = configuration;
         JerseyEnvironment jerseyEnvironment = environment.jersey();
 
         EjemploResource ejemploResource = new EjemploResource();
@@ -73,8 +76,9 @@ public class ServicioApplication extends Application<ServicioConfiguration> {
         environment.servlets().addFilter("cors-filter", CrossOriginFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
 
-        environment.servlets().addFilter("redirect-filter", RedirectFilter.class)
-                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
+        FilterRegistration.Dynamic filtro = environment.servlets().addFilter("redirect-filter", RedirectFilter.class);
+        filtro.setInitParameter("httpsPort", configuration.getHttpsPort());
+        filtro.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
     }
 
     private void registrarValidacionExceptionMapper(Environment environment) {

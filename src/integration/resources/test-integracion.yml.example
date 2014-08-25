@@ -15,7 +15,7 @@ database:
   properties:
     charSet: UTF-8
     hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
-    hibernate.show_sql: true
+    hibernate.show_sql: false
     hibernate.default_schema: servicio_ejemplos_integracion
 
   # the maximum amount of time to wait on an empty pool before throwing an exception
@@ -37,11 +37,14 @@ logging:
   level: WARN
 
 server:
+  adminConnectors:
+    - type: http
+      port: 8083
   applicationConnectors:
     - type: http
-      port: 8080
+      port: 8082
     - type: https
-      port: 8443
+      port: 8444
       keyStorePath: test.keystore
       keyStorePassword: test
       validateCerts: false

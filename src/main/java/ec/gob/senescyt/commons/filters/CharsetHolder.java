@@ -4,7 +4,12 @@ import org.apache.commons.lang.NullArgumentException;
 
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 @SuppressWarnings({
         "PMD.CyclomaticComplexity",

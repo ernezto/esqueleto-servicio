@@ -1,7 +1,5 @@
 package ec.gob.senescyt.commons.filters;
 
-import ec.gob.senescyt.commons.Constantes;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -15,11 +13,12 @@ import java.io.IOException;
 
 public class RedirectFilter implements Filter {
 
+    private String httpsPort;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // do nothing
+        httpsPort = filterConfig.getInitParameter("httpsPort");
     }
-
 
     @Override
     public void destroy() {
@@ -62,8 +61,7 @@ public class RedirectFilter implements Filter {
         redirect.append("://");
         redirect.append(serverName);
         redirect.append(":");
-
-        redirect.append(Constantes.HTTPS_PORT);
+        redirect.append(httpsPort);
         redirect.append(uri);
 
         if (query != null) {
