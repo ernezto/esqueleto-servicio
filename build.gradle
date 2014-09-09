@@ -13,6 +13,7 @@ apply plugin: 'jacoco'
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath 'org.flywaydb:flyway-gradle-plugin:3.0'
@@ -53,6 +54,7 @@ project.ext {
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 configurations {
@@ -70,6 +72,7 @@ dependencies {
             'org.postgresql:postgresql:9.3-1101-jdbc41',
             'org.flywaydb:flyway-core:3.0',
             'commons-validator:commons-validator:1.4.0',
+            'ec.gob.senescyt:microservicios-commons:1.0.0-SNAPSHOT'
     )
     testCompile(
             'junit:junit:4.11',
