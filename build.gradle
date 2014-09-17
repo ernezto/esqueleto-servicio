@@ -54,7 +54,9 @@ project.ext {
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
-    mavenLocal()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 configurations {
