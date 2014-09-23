@@ -16,8 +16,8 @@ ssh {
 
 remotes {
     snieseqa {
-        host = "$System.env.DEPLOY_SSH_IP"
-        port = "$System.env.DEPLOY_SSH_PORT".toInteger()
+        host = "\$System.env.DEPLOY_SSH_IP"
+        port = "\$System.env.DEPLOY_SSH_PORT".toInteger()
         user = 'sniese'
     }
 }
@@ -25,11 +25,11 @@ remotes {
 task deployQA(type: SshTask) {
     description = 'Despliega el Jar a QA'
     session(remotes.snieseqa) {
-        def targetDir = '/home/sniese/servicios/servicio-ejemplos/'
-        execute "mkdir -p ${targetDir}"
+        def targetDir = "/home/sniese/servicios/servicio-${nombreMicroservicio}/"
+        execute "mkdir -p \${targetDir}"
         put 'build/libs/servicio-standalone.jar', targetDir
         put 'servicio-qa.yml', targetDir + 'servicio.yml'
         put 'sniese.keystore', targetDir
-        executeSudo 'service servicio-ejemplos restart', pty: true
+        executeSudo "service servicio-${nombreMicroservicio} restart", pty: true
     }
 }

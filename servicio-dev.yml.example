@@ -16,7 +16,7 @@ database:
     charSet: UTF-8
     hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate.show_sql: false
-    hibernate.default_schema: servicio_ejemplos
+    hibernate.default_schema: servicio_${nombreMicroservicio}
 
   # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 1s
@@ -64,12 +64,12 @@ logging:
 server:
   adminConnectors:
     - type: http
-      port: 8081
+      port: ${httpInicial.toInteger() + 1}
   applicationConnectors:
     - type: http
-      port: 8080
+      port: ${httpInicial.toInteger()}
     - type: https
-      port: 8443
+      port: ${httpsInicial.toInteger()}
       keyStorePath: test.keystore
       keyStorePassword: test
       validateCerts: false

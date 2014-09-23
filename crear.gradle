@@ -1,0 +1,40 @@
+task crear(type: Copy) {
+    if (project.hasProperty('nombre') && project.hasProperty('puerto')) {
+        def directorioDestino = "../servicio-$project.nombre"
+        if (new File(directorioDestino).exists()) {
+            throw new StopExecutionException("El directorio de destino ($directorioDestino) ya existe")
+        }
+
+        def plantillas = ['servicio-dev.yml.example', 'src/integration/resources/test-integracion.yml.example', 'deploy.gradle']
+        from (plantillas) {
+            expand(nombreMicroservicio: project.nombre, httpInicial: project.puerto, httpsInicial: calcularHttpsInicial(project.puerto))
+        }
+
+        from('.') {
+            def gitignore = new File('.gitignore')
+            gitignore.eachLine {
+                exclude it
+            }
+            exclude 'crear.gradle'
+            exclude plantillas
+        }
+
+        into(directorioDestino)
+        println "Copiado a $directorioDestino"
+
+    } else {
+        throw new StopExecutionException('Uso correcto: ./gradlew -b crear.gradle -Pnombre=<nombre microservicio> -Ppuerto=<puerto inicial>')
+    }
+
+}
+
+def calcularHttpsInicial(puertoHttp) {
+    puertoHttp = puertoHttp.toInteger()
+    final HTTP_SEMILLA = 8080
+    final HTTPS_SEMILLA = 8443
+    def diferenciaSemillas = HTTPS_SEMILLA - HTTP_SEMILLA
+    def decrementoEntreProtocolos = (puertoHttp - HTTP_SEMILLA) / 2
+    return puertoHttp + (diferenciaSemillas - decrementoEntreProtocolos)
+}
+
+defaultTasks 'crear'

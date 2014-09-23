@@ -100,7 +100,7 @@ run {
 
         def ambienteParaLevantar = ambiente.split()[0]
 
-        ext.archivoConfiguracion = "servicio-$ambienteParaLevantar.yml"
+        ext.archivoConfiguracion = "servicio-${ambienteParaLevantar}.yml"
     }
 
     args 'server', archivoConfiguracion
