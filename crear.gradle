@@ -5,8 +5,9 @@ task crear(type: Copy) {
             throw new StopExecutionException("El directorio de destino ($directorioDestino) ya existe")
         }
 
-        def plantillas = ['servicio-dev.yml.example', 'src/integration/resources/test-integracion.yml.example', 'deploy.gradle']
-        from (plantillas) {
+        def plantillas = ['**/*.yml.example', 'deploy.gradle']
+        from ('.') {
+            include plantillas
             expand(nombreMicroservicio: project.nombre, httpInicial: project.puerto, httpsInicial: calcularHttpsInicial(project.puerto))
         }
 
