@@ -1,10 +1,12 @@
 package ec.gob.senescyt.ejemplo.core;
 
+import ec.gob.senescyt.microservicios.commons.core.EntidadBase;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Ejemplo {
+public class Ejemplo extends EntidadBase {
     @Id
     private String id;
     private String nombre;

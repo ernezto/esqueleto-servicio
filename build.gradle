@@ -45,7 +45,6 @@ sourceSets {
     }
 }
 
-
 // Set our project variables
 project.ext {
     dropwizardVersion = '0.7.0'
@@ -137,56 +136,33 @@ pmd {
     targetJdk = '1.7'
 }
 
+project.ext.pmdRuleSets = [
+        'basic',
+        'braces',
+        'clone',
+        'codesize',
+        'coupling',
+        'logging-java',
+        'migrating',
+        'strictexception',
+        'strings',
+        'typeresolution',
+        'unusedcode',
+]
+
 pmdMain {
-    ruleSets = [
-            'basic',
-            'braces',
-            'clone',
-            'codesize',
-            'coupling',
-            'imports',
-            'logging-java',
-            'migrating',
-            'strictexception',
-            'strings',
-            'typeresolution',
-            'unusedcode',
-    ]
+    ruleSets = pmdRuleSets + ['imports']
     ruleSetFiles = files('config/pmd/pmd.xml')
 }
 
 pmdTest {
-    ruleSets = [
-            'basic',
-            'braces',
-            'clone',
-            'codesize',
-            'coupling',
-            'logging-java',
-            'migrating',
-            'strictexception',
-            'strings',
-            'typeresolution',
-            'unusedcode',
-    ]
-    ruleSetFiles = files('config/pmd/pmd.xml')
+    ruleSets = pmdRuleSets
+    ruleSetFiles = files('config/pmd/pmd-test.xml')
 }
 
 pmdIntTest {
-    ruleSets = [
-            'basic',
-            'braces',
-            'clone',
-            'codesize',
-            'coupling',
-            'logging-java',
-            'migrating',
-            'strictexception',
-            'strings',
-            'typeresolution',
-            'unusedcode',
-    ]
-    ruleSetFiles = files('config/pmd/pmd.xml')
+    ruleSets = pmdRuleSets
+    ruleSetFiles = files('config/pmd/pmd-test.xml')
 }
 
 findbugs {
