@@ -69,13 +69,13 @@ task gitAcometer(type: Exec) {
 
 task imprimirInfo() {
     doLast {
-        def urlOrganizacion = 'https://github.com/Senescyt'
+        def organizacion = 'Senescyt'
         println '\n==============================================================================='
         println "Microservicio creado en $directorioDestino"
         println 'Repositorio de git inicializado'
         println "\nPor favor, crea el repositorio $nombreMicroservicio en GitHub en la cuenta de la organización:"
-        println "  $urlOrganizacion"
-        println "  $urlOrganizacion/$nombreMicroservicio"
+        println "  https://github.com/organizations/$organizacion/repositories/new"
+        println "  https://github.com/$organizacion/$nombreMicroservicio"
     }
 }
 
