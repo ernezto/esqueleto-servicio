@@ -1,6 +1,13 @@
-task crear(type: Copy) {
+def nombreMicroservicio
+def directorioDestino
+
+if (project.hasProperty('nombre')) {
+    nombreMicroservicio = "servicio-$project.nombre"
+    directorioDestino = "../$nombreMicroservicio"
+}
+
+task copiarArchivos(type: Copy) {
     if (project.hasProperty('nombre') && project.hasProperty('puerto')) {
-        def directorioDestino = "../servicio-$project.nombre"
         if (new File(directorioDestino).exists()) {
             throw new StopExecutionException("El directorio de destino ($directorioDestino) ya existe")
         }
@@ -8,7 +15,8 @@ task crear(type: Copy) {
         def plantillas = ['**/*.yml.example', 'deploy.gradle']
         from ('.') {
             include plantillas
-            expand(nombreMicroservicio: project.nombre, httpInicial: project.puerto, httpsInicial: calcularHttpsInicial(project.puerto))
+            expand(nombreMicroservicio: nombreMicroservicio, httpInicial: project.puerto,
+                    httpsInicial: calcularHttpsInicial(project.puerto))
         }
 
         from('.') {
@@ -16,17 +24,46 @@ task crear(type: Copy) {
             gitignore.eachLine {
                 exclude it
             }
-            exclude 'crear.gradle'
-            exclude plantillas
+            exclude plantillas + ['crear.gradle', 'gitignore']
         }
 
-        into(directorioDestino)
-        println "Copiado a $directorioDestino"
-
+        into directorioDestino
     } else {
         throw new StopExecutionException('Uso correcto: ./gradlew -b crear.gradle -Pnombre=<nombre microservicio> -Ppuerto=<puerto inicial>')
     }
+}
 
+task copiarGitignore(type: Copy) {
+    from 'gitignore'
+    into directorioDestino
+    rename { file -> '.gitignore' }
+}
+
+task gitInicializar(type: Exec) {
+    workingDir directorioDestino
+    commandLine 'git', 'init'
+}
+
+task gitAgregar(type: Exec) {
+    workingDir directorioDestino
+    commandLine 'git', 'add', '.'
+}
+
+task gitAcometer(type: Exec) {
+    workingDir directorioDestino
+    commandLine 'git', 'commit', '-m"[#0] Crear estructura inicial para microservicio"'
+}
+
+task imprimirInfo() {
+    doLast {
+        def urlOrganizacion = 'https://github.com/Senescyt'
+        println '\n==============================================================================='
+        println "Microservicio creado en $directorioDestino"
+        println 'Repositorio de git inicializado'
+        println "\nPor favor, crea el repositorio $nombreMicroservicio en GitHub en la cuenta de la organización:"
+        println "  $urlOrganizacion"
+        println "  $urlOrganizacion/$nombreMicroservicio"
+    }
 }
 
 def calcularHttpsInicial(puertoHttp) {
@@ -38,4 +75,4 @@ def calcularHttpsInicial(puertoHttp) {
     return puertoHttp + (diferenciaSemillas - decrementoEntreProtocolos)
 }
 
-defaultTasks 'crear'
+defaultTasks 'copiarArchivos', 'copiarGitignore', 'gitInicializar', 'gitAgregar', 'gitAcometer', 'imprimirInfo'
