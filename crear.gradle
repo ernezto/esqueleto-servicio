@@ -33,8 +33,13 @@ task copiarGitignore(type: Copy) {
 }
 
 task copiarKeystore(type: Copy) {
-    from 'sniese.keystore'
-    into directorioDestino
+    def archivoKeystore = 'sniese.keystore'
+    if (new File(archivoKeystore).exists()) {
+        from archivoKeystore
+        into directorioDestino
+    } else {
+        throw new StopExecutionException("No se encontró el archivo $archivoKeystore")
+    }
 }
 
 task copiarConfiguracion(type: Copy) {

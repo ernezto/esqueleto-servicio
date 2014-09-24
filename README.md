@@ -1,28 +1,44 @@
-dropwizard-gradle
-=================
+# esqueleto-servicio
 
-Setting up a Dropwizard project using Gradle (each commit is a step in the process). It follows the example on [Dropwizard Getting Started Guide](https://dropwizard.github.io/dropwizard/getting-started.html)
+Base para arrancar un microservicio desde cero
 
-Steps to run:
--------
+## Instrucciones
 
-- Run gradle:
+Clonar este repositorio y entrar en su directorio
 
-      ./gradlew run
-      
-- Go to http://localtest.me:8080/hello-world
+```sh
+git clone https://github.com/Senescyt/esqueleto-servicio
+cd esqueleto-servicio
+```
 
+Copiar en la raíz el archivo `sniese.keystore`
 
+```sh
+cp ../servicio-usuario/sniese.keystore .
+```
 
-To Create a IntelliJ project:
------------------------------
+Ejecutar la tarea de `gradle` para crear un nuevo microservicio
 
-- Run:
+```sh
+./gradlew -b crear.gradle -Pnombre=<nombre microservicio> -Ppuerto=<puerto inicial> -Pkpass=<contraseña del keystore>
+```
 
-     ./gradlew idea
+Reemplazando:  
+`<nombre microservicio>` por un nombre, por ejemplo `mascotas`  
+`<puerto inicial>` por el número de puerto HTTP inicial, por ejemplo `8080`  
+`<contraseña del keystore>` por la contraseña para el archivo
+`sniese.keystore`, por ejemplo `superSecreto`  
+Así:
 
+```sh
+./gradlew -b crear.gradle -Pnombre=mascotas -Ppuerto=8080 -Pkpass=superSecreto
+```
 
-Troubleshooting:
-----------------
+Para este ejemplo se creará un nuevo directorio en `../servicio-mascotas`, con
+todo lo necesario para poder empezar a usarlo y desarrollarlo
 
-- You may need to install [Java 7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
+```sh
+cd ../servicio-mascotas
+./gradlew idea
+./gradlew run
+```
