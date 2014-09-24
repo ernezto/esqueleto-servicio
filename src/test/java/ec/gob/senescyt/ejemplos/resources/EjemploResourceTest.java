@@ -1,4 +1,4 @@
-package ec.gob.senescyt.ejemplo.resources;
+package ec.gob.senescyt.ejemplos.resources;
 
 import org.junit.Test;
 

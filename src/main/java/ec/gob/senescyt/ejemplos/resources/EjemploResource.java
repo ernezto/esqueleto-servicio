@@ -1,4 +1,4 @@
-package ec.gob.senescyt.ejemplo.resources;
+package ec.gob.senescyt.ejemplos.resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

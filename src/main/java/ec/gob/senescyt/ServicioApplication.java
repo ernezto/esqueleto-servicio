@@ -2,8 +2,8 @@ package ec.gob.senescyt;
 
 import com.google.common.annotations.VisibleForTesting;
 import ec.gob.senescyt.commons.bundles.DBMigrationsBundle;
-import ec.gob.senescyt.ejemplo.core.Ejemplo;
-import ec.gob.senescyt.ejemplo.resources.EjemploResource;
+import ec.gob.senescyt.ejemplos.core.Ejemplo;
+import ec.gob.senescyt.ejemplos.resources.EjemploResource;
 import ec.gob.senescyt.microservicios.commons.MicroservicioAplicacion;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;

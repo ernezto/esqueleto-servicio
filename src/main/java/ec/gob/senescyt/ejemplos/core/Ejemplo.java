@@ -1,4 +1,4 @@
-package ec.gob.senescyt.ejemplo.core;
+package ec.gob.senescyt.ejemplos.core;
 
 import ec.gob.senescyt.microservicios.commons.core.EntidadBase;
 
