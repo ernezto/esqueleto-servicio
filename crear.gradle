@@ -1,5 +1,6 @@
 def nombreMicroservicio
 def directorioDestino
+def plantillas = ['**/*.yml.example', 'deploy.gradle']
 
 if (project.hasProperty('nombre')) {
     nombreMicroservicio = "servicio-$project.nombre"
@@ -7,36 +8,43 @@ if (project.hasProperty('nombre')) {
 }
 
 task copiarArchivos(type: Copy) {
-    if (project.hasProperty('nombre') && project.hasProperty('puerto')) {
+    if (project.hasProperty('nombre') && project.hasProperty('puerto') && project.hasProperty('kpass')) {
         if (new File(directorioDestino).exists()) {
             throw new StopExecutionException("El directorio de destino ($directorioDestino) ya existe")
         }
 
-        def plantillas = ['**/*.yml.example', 'deploy.gradle']
-        from ('.') {
-            include plantillas
-            expand(nombreMicroservicio: nombreMicroservicio, httpInicial: project.puerto,
-                    httpsInicial: calcularHttpsInicial(project.puerto))
-        }
-
         from('.') {
             def gitignore = new File('.gitignore')
-            gitignore.eachLine {
-                exclude it
-            }
+            gitignore.eachLine { exclude it }
             exclude plantillas + ['crear.gradle', 'gitignore']
         }
 
         into directorioDestino
     } else {
-        throw new StopExecutionException('Uso correcto: ./gradlew -b crear.gradle -Pnombre=<nombre microservicio> -Ppuerto=<puerto inicial>')
+        throw new StopExecutionException('Uso correcto: ./gradlew -b crear.gradle -Pnombre=<nombre microservicio>' +
+                ' -Ppuerto=<puerto inicial> -Pkpass=<contraseña del keystore>')
     }
 }
 
 task copiarGitignore(type: Copy) {
     from 'gitignore'
     into directorioDestino
-    rename { file -> '.gitignore' }
+    rename { nombreArchivo -> '.gitignore' }
+}
+
+task copiarKeystore(type: Copy) {
+    from 'sniese.keystore'
+    into directorioDestino
+}
+
+task copiarConfiguracion(type: Copy) {
+    from ('.') {
+        include plantillas
+        expand(nombreMicroservicio: nombreMicroservicio, keyStorePassword: project.kpass, httpInicial: project.puerto,
+                httpsInicial: calcularHttpsInicial(project.puerto))
+    }
+    rename { nombreArchivo -> nombreArchivo.replace('.example', '') }
+    into directorioDestino
 }
 
 task gitInicializar(type: Exec) {
@@ -75,4 +83,5 @@ def calcularHttpsInicial(puertoHttp) {
     return puertoHttp + (diferenciaSemillas - decrementoEntreProtocolos)
 }
 
-defaultTasks 'copiarArchivos', 'copiarGitignore', 'gitInicializar', 'gitAgregar', 'gitAcometer', 'imprimirInfo'
+defaultTasks 'copiarArchivos', 'copiarGitignore', 'copiarKeystore', 'copiarConfiguracion', 'gitInicializar',
+        'gitAgregar', 'gitAcometer', 'imprimirInfo'
