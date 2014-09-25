@@ -76,6 +76,9 @@ task imprimirInfo() {
         println "\nPor favor, crea el repositorio $nombreMicroservicio en GitHub en la cuenta de la organización:"
         println "  https://github.com/organizations/$organizacion/repositories/new"
         println "  https://github.com/$organizacion/$nombreMicroservicio"
+        println "\nPor favor, crea el repositorio privado configuracion-$nombreMicroservicio en Bitbucket en la cuenta de la organización:"
+        println "  https://bitbucket.org/repo/create"
+        println "  https://bitbucket.org/$organizacion/configuracion-$nombreMicroservicio"
     }
 }
 
