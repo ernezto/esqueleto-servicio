@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml
 
-// Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'flyway'
@@ -45,12 +44,11 @@ sourceSets {
     }
 }
 
-// Set our project variables
 project.ext {
     dropwizardVersion = '0.7.0'
     archivoConfiguracion = 'servicio-dev.yml'
 }
-// In this section you declare where to find the dependencies of your project
+
 repositories {
     mavenCentral()
     maven {
@@ -63,7 +61,6 @@ configurations {
     intTestRuntime.extendsFrom(testRuntime)
 }
 
-// In this section you declare the dependencies for your production and test code
 dependencies {
     compile(
             'io.dropwizard:dropwizard-core:' + dropwizardVersion,
@@ -86,23 +83,17 @@ task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
 }
 
-// The main class of the application
 mainClassName = 'ec.gob.senescyt.ServicioApplication'
 
-// Configure the run task to start the Dropwizard service
 run {
     if (project.hasProperty('ambiente')) {
         if (ambiente.split().size() == 0) {
             error = 'Debe especificar uno de los siguientes ambientes:\ndev: Desarrollo\nqa:Control de Calidad\nci:Integracion Continua\nEjemplo:./gradlew run -P ambiente=dev'
-
             throw new StopExecutionException(error)
         }
-
         def ambienteParaLevantar = ambiente.split()[0]
-
         ext.archivoConfiguracion = "servicio-${ambienteParaLevantar}.yml"
     }
-
     args 'server', archivoConfiguracion
 }
 
@@ -111,14 +102,12 @@ test {
 }
 
 tasks.withType(Test) {
-    // show standard out and standard error of the test JVM(s) on the console
     testLogging {
         showStandardStreams = true
         displayGranularity = 2
         exceptionFormat = 'full'
         events 'started', 'passed'
     }
-
     outputs.upToDateWhen { false }
 }
 
