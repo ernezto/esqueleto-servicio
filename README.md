@@ -4,6 +4,13 @@ Base para arrancar un microservicio desde cero
 
 ## Instrucciones
 
+Instalar [blackbox](https://github.com/StackExchange/blackbox) y asegurarse
+que sus ejecutables estén en el PATH
+
+````sh
+which blackbox_initialize
+```
+
 Clonar este repositorio y entrar en su directorio
 
 ```sh
@@ -28,6 +35,7 @@ Reemplazando:
 `<puerto inicial>` por el número de puerto HTTP inicial, por ejemplo `8080`  
 `<contraseña del keystore>` por la contraseña para el archivo
 `sniese.keystore`, por ejemplo `superSecreto`  
+
 Así:
 
 ```sh

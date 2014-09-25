@@ -14,11 +14,9 @@ task copiarArchivos(type: Copy) {
         }
 
         from('.') {
-            def gitignore = new File('.gitignore')
-            gitignore.eachLine { exclude it }
-            exclude plantillas + ['crear.gradle', 'gitignore']
+            new File('.gitignore').eachLine { exclude it }
+            exclude plantillas + ['crear.gradle', 'gitignore', 'git.sh']
         }
-
         into directorioDestino
     } else {
         throw new StopExecutionException('Uso correcto: ./gradlew -b crear.gradle -Pnombre=<nombre microservicio>' +
@@ -53,18 +51,8 @@ task copiarConfiguracion(type: Copy) {
 }
 
 task gitInicializar(type: Exec) {
-    workingDir directorioDestino
-    commandLine 'git', 'init'
-}
-
-task gitAgregar(type: Exec) {
-    workingDir directorioDestino
-    commandLine 'git', 'add', '.'
-}
-
-task gitAcometer(type: Exec) {
-    workingDir directorioDestino
-    commandLine 'git', 'commit', '-m"[#0] Crear estructura inicial para microservicio"'
+    workingDir '.'
+    commandLine './git.sh', directorioDestino
 }
 
 task imprimirInfo() {
@@ -89,4 +77,4 @@ def calcularHttpsInicial(puertoHttp) {
 }
 
 defaultTasks 'copiarArchivos', 'copiarGitignore', 'copiarKeystore', 'copiarConfiguracion', 'gitInicializar',
-        'gitAgregar', 'gitAcometer', 'imprimirInfo'
+        'imprimirInfo'
