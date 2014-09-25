@@ -23,18 +23,18 @@ Ejecutar la siguiente tarea de `gradle` para crear un nuevo microservicio
 ./gradlew -b crear.gradle -Pnombre=<nombre microservicio> -Ppuerto=<puerto inicial> -Pkpass=<contraseña del keystore>
 ```
 
-Por ejemplo:
+Por ejemplo
 
 ```sh
 ./gradlew -b crear.gradle -Pnombre=mascotas -Ppuerto=8080 -Pkpass=superSecreto
 ```
 
 Donde:  
-`<nombre microservicio>` es el nombre del microservicio sin el prefijo `servicio-`
-`<puerto inicial>` es el número de puerto HTTP inicial ([ver tabla en mingle][1])
+`<nombre microservicio>` es el nombre del microservicio sin el prefijo `servicio-`  
+`<puerto inicial>` es el número de puerto HTTP inicial ([ver tabla en mingle][1])  
 `<contraseña del keystore>` es la contraseña del archivo `sniese.keystore`
 
-Para el ejemplo anterior se creará un nuevo directorio en `../servicio-mascotas`, con
+El ejemplo anterior creará un nuevo directorio en `../servicio-mascotas`, con
 todo lo necesario para poder empezar a usarlo y desarrollarlo
 
 ```sh
