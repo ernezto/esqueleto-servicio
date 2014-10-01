@@ -45,5 +45,5 @@ server:
     - type: https
       port: ${httpsInicial.toInteger()}
       keyStorePath: sniese.keystore
-      keyStorePassword: ${keyStorePassword}
+      keyStorePassword: \${keyStorePassword}
       validateCerts: false

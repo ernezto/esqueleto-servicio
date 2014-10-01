@@ -42,13 +42,20 @@ task copiarKeystore(type: Copy) {
     }
 }
 
-task copiarConfiguracion(type: Copy) {
+task expandirConfig(type: Copy) {
     from ('.') {
         include plantillas
-        expand(nombreMicroservicio: nombreMicroservicio, keyStorePassword: project.kpass, httpInicial: project.puerto,
-                httpsInicial: calcularHttpsInicial(project.puerto))
+        expand(nombreMicroservicio: nombreMicroservicio, httpInicial: project.puerto, httpsInicial: calcularHttpsInicial(project.puerto))
     }
-    rename { nombreArchivo -> nombreArchivo.replace('.example', '') }
+    into directorioDestino
+}
+
+task expandirSecretos(type: Copy) {
+    from (directorioDestino) {
+        include plantillas
+        rename { nombreArchivo -> nombreArchivo.replace('.example', '') }
+        expand(keyStorePassword: project.kpass)
+    }
     into directorioDestino
 }
 
@@ -91,5 +98,5 @@ def calcularHttpsInicial(puertoHttp) {
     return puertoHttp + (diferenciaSemillas - decrementoEntreProtocolos)
 }
 
-defaultTasks 'copiarArchivos', 'copiarGitignore', 'copiarKeystore', 'copiarConfiguracion', 'gitInicializar',
-        'gitAgregar', 'gitAcometer', 'imprimirInfo'
+defaultTasks 'copiarArchivos', 'copiarGitignore', 'copiarKeystore', 'expandirConfig', 'expandirSecretos',
+             'gitInicializar', 'gitAgregar', 'gitAcometer', 'imprimirInfo'
