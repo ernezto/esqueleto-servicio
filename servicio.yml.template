@@ -2,7 +2,7 @@ database:
   driverClass: org.postgresql.Driver
   user: thoughtworks
   password: Passw0rd
-  url: jdbc:postgresql://localhost/senescyt
+  url: jdbc:postgresql://${host}/senescyt
   maxWaitForConnection: 1s
   validationQuery: "/* DB Health Check */ SELECT 1"
   initialSize: 1
@@ -16,7 +16,7 @@ database:
     hibernate.default_schema: ${nombreMicroservicio.replace('-', '_')}
 
 logging:
-  level: DEBUG
+  level: INFO
   appenders:
     - type: console
       threshold: INFO
@@ -28,22 +28,19 @@ logging:
       archivedLogFilenamePattern: ./logs/servicio-%d.log.gz
       archivedFileCount: 5
       timeZone: EST
-    - type: file
-      threshold: DEBUG
-      currentLogFilename: ./logs/debug-servicio.log
-      archivedLogFilenamePattern: ./logs/debug-servicio-%d{yyyy-MM-dd-hh}.log.gz
-      archivedFileCount: 6
-      timeZone: EST
 
 server:
   adminConnectors:
     - type: http
-      port: ${httpInicial.toInteger() + 1}
+      port: ${httpsInicial.toInteger() + 1}
   applicationConnectors:
     - type: http
       port: ${httpInicial.toInteger()}
     - type: https
       port: ${httpsInicial.toInteger()}
       keyStorePath: sniese.keystore
-      keyStorePassword: \${keyStorePassword}
+      keyStorePassword: \${claveSnieseKeyStore}
       validateCerts: false
+
+auditoria:
+  writerClass: ec.gob.senescyt.microservicios.commons.bundles.audit.LogAuditoriaWriter

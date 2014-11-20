@@ -1,6 +1,6 @@
 def nombreMicroservicio
 def directorioDestino
-def plantillas = ['**/*.yml.example', 'deploy.gradle']
+def plantillas = ['**/*.yml.template', 'deploy.gradle', 'configuracion.gradle']
 
 if (project.hasProperty('nombre')) {
     nombreMicroservicio = "servicio-$project.nombre"
@@ -16,7 +16,7 @@ task copiarArchivos(type: Copy) {
         from('.') {
             def gitignore = new File('.gitignore')
             gitignore.eachLine { exclude it }
-            exclude plantillas + ['crear.gradle', 'gitignore']
+            exclude plantillas + ['crear.gradle','deploy.gradle', 'gitignore', 'configuracion.gradle.template']
         }
 
         into directorioDestino
@@ -32,6 +32,13 @@ task copiarGitignore(type: Copy) {
     rename { nombreArchivo -> '.gitignore' }
 }
 
+task copiarConfiguracion(type: Copy) {
+    from('.')
+    include('configuracion.gradle.template')
+    rename { String fileName -> fileName.replace('.template', '') }
+    into('.')
+}
+
 task copiarKeystore(type: Copy) {
     def archivoKeystore = 'sniese.keystore'
     if (new File(archivoKeystore).exists()) {
@@ -43,19 +50,12 @@ task copiarKeystore(type: Copy) {
 }
 
 task expandirConfig(type: Copy) {
-    from ('.') {
+    from('.') {
         include plantillas
-        expand(nombreMicroservicio: nombreMicroservicio, httpInicial: project.puerto, httpsInicial: calcularHttpsInicial(project.puerto))
+        expand(nombreMicroservicio: nombreMicroservicio, httpInicial: project.puerto,
+                httpsInicial: calcularHttpsInicial(project.puerto), host: '${host}')
     }
-    into directorioDestino
-}
 
-task expandirSecretos(type: Copy) {
-    from (directorioDestino) {
-        include plantillas
-        rename { nombreArchivo -> nombreArchivo.replace('.example', '') }
-        expand(keyStorePassword: project.kpass)
-    }
     into directorioDestino
 }
 
@@ -98,5 +98,5 @@ def calcularHttpsInicial(puertoHttp) {
     return puertoHttp + (diferenciaSemillas - decrementoEntreProtocolos)
 }
 
-defaultTasks 'copiarArchivos', 'copiarGitignore', 'copiarKeystore', 'expandirConfig', 'expandirSecretos',
-             'gitInicializar', 'gitAgregar', 'gitAcometer', 'imprimirInfo'
+defaultTasks 'copiarArchivos', 'copiarGitignore', 'copiarKeystore', 'copiarConfiguracion',
+        'expandirConfig', 'gitInicializar', 'gitAgregar', 'gitAcometer', 'imprimirInfo'

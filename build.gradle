@@ -1,5 +1,3 @@
-import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml
-
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'flyway'
@@ -8,6 +6,11 @@ apply plugin: 'gradle-one-jar'
 apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'jacoco'
+apply from: 'configuracion.gradle'
+
+tasks.withType(Compile) {
+    options.encoding = 'UTF-8'
+}
 
 buildscript {
     repositories {
@@ -19,16 +22,6 @@ buildscript {
         classpath 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.2'
         classpath 'com.github.rholder:gradle-one-jar:1.0.3'
     }
-}
-
-flyway {
-    def yamlConfig = new Yaml().load(new File('servicio-dev.yml').newReader())
-    def dbConfig = yamlConfig.database
-
-    user = dbConfig.user
-    password = dbConfig.password
-    url = dbConfig.url
-    schemas = [dbConfig.properties.'hibernate.default_schema']
 }
 
 sourceSets {
@@ -46,7 +39,7 @@ sourceSets {
 
 project.ext {
     dropwizardVersion = '0.7.0'
-    archivoConfiguracion = 'servicio-dev.yml'
+    archivoConfiguracion = 'servicio.yml'
 }
 
 repositories {
@@ -71,10 +64,11 @@ dependencies {
             'org.flywaydb:flyway-core:3.0',
             'commons-validator:commons-validator:1.4.0',
             'ec.gob.senescyt:microservicios-commons:1.0.0-SNAPSHOT',
+            'com.github.oxo42:stateless4j:2.4.2'
     )
     testCompile(
             'junit:junit:4.11',
-            'org.hamcrest:hamcrest-core:1.3',
+            'org.hamcrest:hamcrest-all:1.3',
             'org.mockito:mockito-all:1.9.5',
             'org.unitils:unitils-core:3.4.2',
     )
@@ -87,22 +81,28 @@ task wrapper(type: Wrapper) {
 mainClassName = 'ec.gob.senescyt.ServicioApplication'
 
 run {
-    if (project.hasProperty('ambiente')) {
-        if (ambiente.split().size() == 0) {
-            error = 'Debe especificar uno de los siguientes ambientes:\ndev: Desarrollo\nqa:Control de Calidad\nci:Integracion Continua\nEjemplo:./gradlew run -P ambiente=dev'
-            throw new StopExecutionException(error)
-        }
-        def ambienteParaLevantar = ambiente.split()[0]
-        ext.archivoConfiguracion = "servicio-${ambienteParaLevantar}.yml"
-    }
+    dependsOn += configurarServicio
     args 'server', archivoConfiguracion
 }
 
 test {
-    dependsOn pmdMain, pmdTest, pmdIntTest, findbugsMain, findbugsTest, findbugsIntTest
+    dependsOn configurarServicio, pmdMain, pmdTest, pmdIntTest, findbugsMain, findbugsTest, findbugsIntTest
+}
+
+flyway {
+    user = flyway.user
+    password = flyway.password
+    url = flyway.url
+    schemas = [flyway.schemas]
+}
+
+tasks.withType(org.flywaydb.gradle.task.AbstractFlywayTask) {
+    dependsOn += configurarServicio
 }
 
 tasks.withType(Test) {
+    dependsOn += configurarServicio
+
     testLogging {
         showStandardStreams = true
         displayGranularity = 2
@@ -131,7 +131,6 @@ project.ext.pmdRuleSets = [
         'braces',
         'clone',
         'codesize',
-        'coupling',
         'logging-java',
         'migrating',
         'strictexception',
@@ -141,7 +140,7 @@ project.ext.pmdRuleSets = [
 ]
 
 pmdMain {
-    ruleSets = pmdRuleSets + ['imports']
+    ruleSets = pmdRuleSets + ['coupling', 'imports']
     ruleSetFiles = files('config/pmd/pmd.xml')
 }
 

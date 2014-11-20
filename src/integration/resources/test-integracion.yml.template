@@ -2,7 +2,7 @@ database:
   driverClass: org.postgresql.Driver
   user: thoughtworks
   password: Passw0rd
-  url: jdbc:postgresql://localhost/senescyt
+  url: jdbc:postgresql://${host}/senescyt
   maxWaitForConnection: 1s
   validationQuery: "/* DB Health Check */ SELECT 1"
   initialSize: 1
@@ -21,12 +21,15 @@ logging:
 server:
   adminConnectors:
     - type: http
-      port: ${httpInicial.toInteger() + 3}
+      port:  ${httpsInicial.toInteger() + 3}
   applicationConnectors:
     - type: http
-      port: ${httpInicial.toInteger() + 2}
+      port: ${httpInicial.toInteger() + 1}
     - type: https
-      port: ${httpsInicial.toInteger() + 1}
+      port: ${httpsInicial.toInteger() + 2}
       keyStorePath: sniese.keystore
-      keyStorePassword: \${keyStorePassword}
+      keyStorePassword: \${claveSnieseKeyStore}
       validateCerts: false
+
+auditoria:
+  writerClass: ec.gob.senescyt.microservicios.commons.bundles.audit.LogAuditoriaWriter
