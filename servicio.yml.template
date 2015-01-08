@@ -32,7 +32,7 @@ logging:
 server:
   adminConnectors:
     - type: http
-      port: ${httpsInicial.toInteger() + 1}
+      port: ${httpInicial.toInteger() + 1}
   applicationConnectors:
     - type: http
       port: ${httpInicial.toInteger()}

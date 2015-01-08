@@ -21,12 +21,12 @@ logging:
 server:
   adminConnectors:
     - type: http
-      port:  ${httpsInicial.toInteger() + 3}
+      port:  ${httpInicial.toInteger() + 3}
   applicationConnectors:
     - type: http
-      port: ${httpInicial.toInteger() + 1}
+      port: ${httpInicial.toInteger() + 2}
     - type: https
-      port: ${httpsInicial.toInteger() + 2}
+      port: ${httpsInicial.toInteger() + 1}
       keyStorePath: sniese.keystore
       keyStorePassword: \${claveSnieseKeyStore}
       validateCerts: false
