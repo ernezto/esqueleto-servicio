@@ -1,7 +1,6 @@
 package ec.gob.senescyt;
 
 import com.google.common.annotations.VisibleForTesting;
-import ec.gob.senescyt.commons.bundles.DBMigrationsBundle;
 import ec.gob.senescyt.ejemplos.core.Ejemplo;
 import ec.gob.senescyt.ejemplos.resources.EjemploResource;
 import ec.gob.senescyt.microservicios.commons.MicroservicioAplicacion;
@@ -14,7 +13,6 @@ import org.hibernate.SessionFactory;
 
 public class ServicioApplication extends MicroservicioAplicacion<ServicioConfiguration> {
 
-    private final DBMigrationsBundle flywayBundle = new DBMigrationsBundle();
     private final HibernateBundle<ServicioConfiguration> hibernate = new HibernateBundle<ServicioConfiguration>(Ejemplo.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(ServicioConfiguration configuration) {
@@ -34,7 +32,7 @@ public class ServicioApplication extends MicroservicioAplicacion<ServicioConfigu
 
     @Override
     public void inicializar(Bootstrap<ServicioConfiguration> bootstrap) {
-        bootstrap.addBundle(flywayBundle);
+        // Do nothing
     }
 
     @Override
