@@ -1,6 +1,6 @@
 package ec.gob.senescyt.ejemplos.core;
 
-import ec.gob.senescyt.microservicios.commons.core.EntidadBase;
+import ec.gob.senescyt.sniese.commons.core.EntidadBase;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

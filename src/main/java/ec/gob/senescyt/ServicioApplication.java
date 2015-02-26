@@ -3,7 +3,7 @@ package ec.gob.senescyt;
 import com.google.common.annotations.VisibleForTesting;
 import ec.gob.senescyt.ejemplos.core.Ejemplo;
 import ec.gob.senescyt.ejemplos.resources.EjemploResource;
-import ec.gob.senescyt.microservicios.commons.MicroservicioAplicacion;
+import ec.gob.senescyt.sniese.commons.MicroservicioAplicacion;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
