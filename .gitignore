@@ -9,6 +9,7 @@ logs/
 .idea/
 .DS_Store
 servicio.yml
+gradle.properties
 src/integration/resources/test-integracion.yml
 src/main/resources/shiro.ini
 sniese.jks
