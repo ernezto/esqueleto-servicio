@@ -1,8 +1,8 @@
 package ec.gob.senescyt;
 
 
-import ec.gob.senescyt.sniese.commons.MicroservicioConfiguracion;
+import ec.gob.senescyt.sniese.commons.configurations.ConfiguracionSnieseBase;
 
-public class ServicioConfiguration extends MicroservicioConfiguracion {
+public class ServicioConfiguration extends ConfiguracionSnieseBase {
     //Añadir configuracion aqui
 }

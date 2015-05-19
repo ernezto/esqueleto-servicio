@@ -52,8 +52,14 @@ task copiarKeystore(type: Copy) {
 task expandirConfig(type: Copy) {
     from('.') {
         include plantillas
-        expand(nombreMicroservicio: nombreMicroservicio, httpInicial: project.puerto,
-                httpsInicial: calcularHttpsInicial(project.puerto), host: '${host}')
+        expand( nombreMicroservicio: nombreMicroservicio,
+                httpInicial: project.puerto,
+                httpsInicial: calcularHttpsInicial(project.puerto),
+                host: '${host}',
+                metricasHost: '${metricasHost}',
+                metricasPuerto: '${metricasPuerto}',
+                configuracionMetricas: '${configuracionMetricas}'
+        )
     }
 
     into directorioDestino
