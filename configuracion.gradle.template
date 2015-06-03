@@ -16,7 +16,7 @@ project.ext {
 task expandirConfig(type: Copy) {
     def hostBaseDeDatos = obtenerValorDesdeVariableDeEntorno("IP_BASE_DATOS_PREPRO", "localhost")
     def clave = obtenerValorDesdeVariableDeEntorno("CLAVE_SNIESE_KEY_STORE", "sniese")
-    def urlBaseAutenticacion = obtenerValorDesdeVariableDeEntorno("URL_BASE_AUTENTICACION", "https://localhost:8447/")
+    def tokenAutenticacionServicio = obtenerValorDesdeVariableDeEntorno("TOKEN_AUTENTICACION_SERVICIOS", "token")
     def urlBaseAutorizacion = obtenerValorDesdeVariableDeEntorno("URL_BASE_AUTORIZACION", "https://localhost:8443/")
     def cantidadInicialConnexiones = obtenerValorDesdeVariableDeEntorno("CANTIDAD_INICIAL_CONEXIONES", "1")
     def cantidadMinimaConnexiones = obtenerValorDesdeVariableDeEntorno("CANTIDAD_MINIMA_CONEXIONES", "1")
@@ -116,7 +116,7 @@ task expandirConfig(type: Copy) {
     rename { String fileName -> fileName.replace('.template', '') }
     expand(host: hostBaseDeDatos,
            claveSnieseKeyStore: clave,
-           urlBaseAutenticacion: urlBaseAutenticacion,
+           tokenAutenticacionServicio: tokenAutenticacionServicio,
            urlBaseAutorizacion: urlBaseAutorizacion,
            cantidadInicialConnexiones: cantidadInicialConnexiones,
            cantidadMinimaConnexiones: cantidadMinimaConnexiones,

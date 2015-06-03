@@ -7,7 +7,6 @@ import ec.gob.senescyt.sniese.commons.applications.AplicacionPersistente;
 import ec.gob.senescyt.sniese.commons.applications.AplicacionSegura;
 import ec.gob.senescyt.sniese.commons.applications.AplicacionSniese;
 import ec.gob.senescyt.sniese.commons.applications.DecoradorAplicacion;
-import ec.gob.senescyt.sniese.commons.security.PrincipalProvider;
 import ec.gob.senescyt.sniese.commons.security.PrincipalProviderImpl;
 import io.dropwizard.Application;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -19,8 +18,8 @@ import org.hibernate.SessionFactory;
 public class ServicioApplication extends Application<ServicioConfiguration> {
 
     private HibernateBundle hibernate = new ServicioHibernateBundle();
-    private JerseyEnvironment jerseyEnvironment;
     private DecoradorAplicacion decoradorAplicacion;
+    //private String defaultSchema;
 
     public ServicioApplication() {
         AplicacionSegura aplicacionSegura = new AplicacionSegura(null, new PrincipalProviderImpl());
@@ -44,10 +43,11 @@ public class ServicioApplication extends Application<ServicioConfiguration> {
     }
 
     @Override
-    public void run(ServicioConfiguration servicioConfiguration, Environment environment) throws Exception {
-        jerseyEnvironment = environment.jersey();
-        String defaultSchema = servicioConfiguration.getConfiguracionPersistente().getDefaultSchema();
-        PrincipalProvider principalProvider = new PrincipalProviderImpl();
+    @SuppressWarnings("PMD.UnusedLocalVariable")
+    public void run(ServicioConfiguration servicioConfiguration, Environment environment) {
+        JerseyEnvironment jerseyEnvironment = environment.jersey();
+        //defaultSchema = servicioConfiguration.getConfiguracionPersistente().getDefaultSchema();
+        //PrincipalProvider principalProvider = new PrincipalProviderImpl();
         EjemploResource ejemploResource = new EjemploResource();
         jerseyEnvironment.register(ejemploResource);
         decoradorAplicacion.run(servicioConfiguration, environment);
